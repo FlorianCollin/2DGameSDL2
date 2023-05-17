@@ -20,7 +20,9 @@ int drawImage(SDL_Texture *image_texture, SDL_Renderer *renderer, SDL_Texture *t
 
 int texturePaste(SDL_Renderer *renderer, SDL_Texture *texture_cible, SDL_Texture *texture_tmp);
 
-SDL_Rect giveRect(int k);
+SDL_Rect giveRect(int k); // size = 32
+SDL_Rect giveRect64(int k); // size = 64
+
 
 void afficheRect(SDL_Rect rect);
 
@@ -29,6 +31,12 @@ void afficheRect(SDL_Rect rect);
 int giveIndice(int x, int y); // Ne pas utiliser à modifier
 
 int getCaseIndex(SDL_Point point);
+
+// pour un fonctionnement en taille 64
+
+int giveIndice64(int x, int y); // Ne pas utiliser à modifier
+
+int getCaseIndex64(SDL_Point point);
 
 
 #endif

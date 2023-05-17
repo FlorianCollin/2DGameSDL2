@@ -175,11 +175,15 @@ void Entity::moove(int dx, int dy, Plateau &plat){
     afficheRect(rect);
 }
 
-void Entity::moove(Direction direction, Plateau &plat){
+
+// Version de moove que l'on utilisera pour la classe fille Player
+
+
+void Entity::moove(Direction direction, Plateau &plat, Config &config){
     
     float deltaTime = 1/30.0; // Ici on considère que l‡e jeu tourne à 30 fps fixe   // NOTE : cette pratique est dangeureuse !!
-    int SCREEN_WIDTH = 640; //provisoire
-    int SCREEN_HEIGHT = 480;
+    int SCREEN_WIDTH = config.getSCREEN_WIDTH();
+    int SCREEN_HEIGHT = config.getSCREEN_HEIGHT();
     int BLOCK_SIZE = rect.w;
 
     if (nullptr != plat.tab) {
@@ -237,12 +241,20 @@ void Entity::moove(Direction direction, Plateau &plat){
         P3.y = rect_tmp.y + h;
 
         int indice0, indice1, indice2, indice3;
-
-        indice0 = getCaseIndex(P0);
-        indice1 = getCaseIndex(P1);
-        indice2 = getCaseIndex(P2);
-        indice3 = getCaseIndex(P3);
-
+        if (rect.w == 32) {
+            indice0 = getCaseIndex(P0);
+            indice1 = getCaseIndex(P1);
+            indice2 = getCaseIndex(P2);
+            indice3 = getCaseIndex(P3);
+        }
+        else if (rect.w == 64) {
+            indice0 = getCaseIndex64(P0);
+            indice1 = getCaseIndex64(P1);
+            indice2 = getCaseIndex64(P2);
+            indice3 = getCaseIndex64(P3);
+        }
+        else printf("error size when mooving\n");
+        
 
         if (plat.get(indice0) == 1) {
             intersection = 1;

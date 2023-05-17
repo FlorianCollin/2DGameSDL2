@@ -1,3 +1,4 @@
+// le code fonctionne nativement avec tout en 32 x 32 mais des fonctions ont été rajouter pour rendre compatible le fonctionnemnt 64 x 64 sans surcharger les fonctions déjà établie
 #ifndef PLAYER_H
 #define PLAYER_H
 
@@ -24,12 +25,13 @@ protected:
     Direction currentDirection;
     Direction lastDirection;
 
-    // pour les animations du player
+    // pour les animations du player // attention chaque sprite doit STRICTEMENT faire 32 par 32 pixels
 
     int frameWidth; // Largeur d'une seule image dans la feuille d'animation
     int frameHeight; // Hauteur d'une seule image dans la feuille d'animation
     int currentFrame; // Index de l'image actuelle (démarre à 0)
     float frameTime; // Temps écoulé depuis le dernier changement d'image
+    
 
     std::map<std::string, Animation> animations;
     /*
@@ -46,7 +48,8 @@ public:
     void levelUp();
     void takeDamage(int damage); 
     bool isAlive(); 
-    void deplace(int dx, int dy, const Plateau &plat) override;
+    // surdefinition de moove à faire
+    void deplace(int dx, int dy, const Plateau &plat) override; // je n'utilise pas cette fonction dans mon code final
     int draw(SDL_Renderer* renderer, SDL_Texture *textureCible) override;
 
     void displayStats(SDL_Renderer* renderer, TTF_Font* font, bool showStats, int SCREEN_WIDTH, int SCREEN_HEIGHT);

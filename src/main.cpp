@@ -12,28 +12,7 @@
 #include "bloc.h"
 #include "player.h"
 #include "config.h"
-//#include "inventory.h"
 
-
-/*
-
-J'ai commencer ce projet en voulant rendre le tout très modulable et evolutif mais je choisi de fixer quelque paramètre clé.
-
-SIZE ENTITY SPRITE PLAYER = 32 !
-
-
-*/
-
-
-// 2 MODE DE DEPLACEMENTS : MOOVE ET DEPLACE
-
-// For testing !
-
-#define MOOVE
-
-#ifndef MOOVE 
-#define DEPLACE
-#endif
 
 int main() {
 
@@ -68,6 +47,8 @@ int main() {
         return 1;
     }
 
+
+
     
     //la methode du fond sera modifier plus tard
     back_texture = loadImage("./asset/image/Sprite-0001.bmp", renderer);
@@ -81,13 +62,12 @@ int main() {
     Bloc mur("./asset/image/Sprite-0002.bmp", renderer);
 
     Plateau plateau0(0, config.getBLOCK_SIZE(), config.getSCREEN_WIDTH(), config.getSCREEN_HEIGHT(), config.getGRID_WIDTH(), config.getGRID_HEIGHT());
-    if (config.getBLOCK_SIZE() == 32) plateau0.map("./asset/map/map32.txt");
-    else if (config.getBLOCK_SIZE() == 16) plateau0.map("./asset/map/map16.txt");
-    //plateau0.edit(3, 3, 1);
+    plateau0.map("./asset/map/map.txt"); // je decide finalement que l'on aurra tjr une grille de 20 par 15 
+    // sachant que l'on a deux mode de fonctionnement possible 32 et 64
     plateau0.affiche();
 
 
-    Player player(0,0,config.getBLOCK_SIZE());
+    Player player(config.getSCREEN_WIDTH()/2 - config.getBLOCK_SIZE(),config.getSCREEN_HEIGHT() - 2*config.getBLOCK_SIZE(),config.getBLOCK_SIZE());
     player.load("./asset/image/AnimationSheet_Character.png", renderer);
 
     //Inventory inv("./image/inventory.bmp", renderer);
@@ -134,22 +114,22 @@ int main() {
                     case SDLK_d:
                         lastDirection = currentDirection;
                         currentDirection = RIGHT;
-                        player.moove(currentDirection, plateau0);
+                        player.moove(currentDirection, plateau0, config);
                         break;
                     case SDLK_q:
                         lastDirection = currentDirection;
                         currentDirection = LEFT;
-                        player.moove(currentDirection, plateau0);                        
+                        player.moove(currentDirection, plateau0, config);                        
                         break;
                     case SDLK_s:
                         lastDirection = currentDirection;
                         currentDirection = DOWN;
-                        player.moove(currentDirection, plateau0);                        
+                        player.moove(currentDirection, plateau0, config);                        
                         break;
                     case SDLK_z:
                         lastDirection = currentDirection;
                         currentDirection = UP;
-                        player.moove(currentDirection, plateau0);                        
+                        player.moove(currentDirection, plateau0, config);                        
                         break;
 
                     case SDLK_i:

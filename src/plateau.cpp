@@ -100,7 +100,7 @@ void Plateau::draw(SDL_Renderer *renderer, SDL_Texture *texture, const Bloc &mur
     rect.w = BLOC_SIZE;
     rect.h = BLOC_SIZE;
     for(int k = 0; k<GRID_WIDTH*GRID_HEIGHT; k++){
-        if (tab[k] == 1){
+        if (tab[k] == 1) {
         	rect.x = (k % GRID_WIDTH) * BLOC_SIZE;
         	rect.y = (k / GRID_WIDTH) * BLOC_SIZE;
             drawImage(mur.texture, renderer, texture, nullptr, &rect);

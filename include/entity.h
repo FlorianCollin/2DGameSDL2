@@ -13,6 +13,7 @@ Elle contient les informations de position, de taille (SDL_Rect) et le texture a
 #include "plateau.h"
 #include "SDL_fonction.h"
 #include "enum.h"
+#include "config.h"
 
 #define HIT_BOX
 
@@ -35,7 +36,7 @@ public:
     // 2 méthode de déplacement : deplace qui déplace dans la grille et moove qui déplace naturellement
     virtual void deplace(int dx, int dy,const Plateau &plat); 
     void moove(int dx, int dy, Plateau &plat); //ici je fais le choix de fixer le nombre de fps à 30
-    void moove(Direction direction, Plateau &plat); // version on l'on fournit uniquement la direction
+    void moove(Direction direction, Plateau &plat, Config &config); // version on l'on fournit uniquement la direction
     virtual int draw(SDL_Renderer* renderer, SDL_Texture *textureCible); 
     // "draw()", affiche l'entity sur le rendu, si aucune texture chargé alors rectangle rouge.
 

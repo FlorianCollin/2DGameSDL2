@@ -98,6 +98,23 @@ SDL_Rect giveRect(int k) {
 
 }
 
+SDL_Rect giveRect64(int k) {
+    SDL_Rect rect;
+    int size = 64; // repétitif
+    rect.w = size;
+    rect.h = size;
+    int nb_lignes = 15;
+    int nb_colonnes = 20;
+    int j = k / nb_colonnes;
+    int i = k % nb_colonnes;
+    rect.x = i * size;
+    rect.y = j * size;
+    return rect;
+
+}
+
+
+
 void afficheRect(SDL_Rect rect) {
     printf("rect : %d %d %d %d\n", rect.x, rect.y, rect.w, rect.h);
 }
@@ -130,6 +147,47 @@ int getCaseIndex(SDL_Point point) {
 
     // Conversion des coordonnées du point en index du tableau
     int index = (point.y / 32) * width + (point.x / 32);
+
+    // Vérification que l'index est bien dans les limites du tableau
+    if (index < 0 || index >= width * height) {
+        // L'index est en dehors du tableau
+        return -1;
+    }
+
+    return index;
+}
+
+
+// Pour faire fonctionner en taille 64 et non 32
+
+int giveIndice64(int x, int y) {
+    int nb_colonnes = 20; // repétitif
+    int indice = 0;
+    int size = 64;
+    int i, j; // on pase par le calcul de i et j qui sont le numéro de la ligne de la case et de la collone
+    // En effet le point de coordonnée (x, y) ce trouve dans la case numéro "num" qui est elle même aux coordonnées (i,j) dans le plateau
+
+    i = x / size; // quotient
+    j = y / size;
+    //printf("giveIndice : x,y -> i,j : (%d,%d)->(%d %d)", x, y, i, j);
+    indice = i * nb_colonnes + j;
+
+    return indice;
+}
+
+int getCaseIndex64(SDL_Point point) {
+    // La largeur et la hauteur du plateau en nombre de cases
+    const int width = 20;
+    const int height = 15;
+
+    // Vérification que le point est bien dans les limites du plateau
+    if (point.x < 0 || point.x >= 20*64 || point.y < 0 || point.y >= 15*64) {
+        // Le point est en dehors du plateau
+        return -1;
+    }
+
+    // Conversion des coordonnées du point en index du tableau
+    int index = (point.y / 64) * width + (point.x / 64);
 
     // Vérification que l'index est bien dans les limites du tableau
     if (index < 0 || index >= width * height) {

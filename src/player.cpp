@@ -8,8 +8,8 @@
 
 Player::Player(int x, int y, int ENTITY_SIZE, float moove_speed, int hp, int exp, int level, int attack_strength, int speed)
     : Entity(x, y, ENTITY_SIZE, moove_speed), hp(hp), exp(exp), level(level), attack_strength(attack_strength), speed(speed) {
-    frameWidth = ENTITY_SIZE;
-    frameHeight = ENTITY_SIZE;
+    frameWidth = 32;
+    frameHeight = 32;
     // Ici on place les animation du joueur 
     addAnimation("basic", 0, 2, 0, 500);
     addAnimation("moove", 0, 8, 3, 250);
@@ -97,6 +97,7 @@ void Player::updateAnimation(float deltaTime) {
 }
 
 void Player::drawAnimation(SDL_Renderer* renderer) {
+
     SDL_Rect srcRect = {(currentAnimation->startFrame + currentFrame) * frameWidth, (currentAnimation->lineFrame) * frameWidth, frameWidth, frameHeight};
     if (currentDirection == LEFT || (lastDirection == LEFT && currentDirection == NOT_MOOVING)) {
         SDL_RenderCopyEx(renderer, texture, &srcRect, &rect, 0, NULL, SDL_FLIP_HORIZONTAL);
@@ -116,15 +117,30 @@ void Player::drawAnimation(SDL_Renderer* renderer) {
     P3.x = rect.x;          
     P3.y = rect.y + rect.h;
     int indice0, indice1, indice2, indice3;
-    indice0 = getCaseIndex(P0);
-    indice1 = getCaseIndex(P1);
-    indice2 = getCaseIndex(P2);
-    indice3 = getCaseIndex(P3);
     SDL_Rect rect0, rect1, rect2, rect3;
-    rect0 = giveRect(indice0);
-    rect1 = giveRect(indice1);
-    rect2 = giveRect(indice2);
-    rect3 = giveRect(indice3);
+
+
+    if (rect.w == 32) {
+        indice0 = getCaseIndex(P0);
+        indice1 = getCaseIndex(P1);
+        indice2 = getCaseIndex(P2);
+        indice3 = getCaseIndex(P3);
+        rect0 = giveRect(indice0);
+        rect1 = giveRect(indice1);
+        rect2 = giveRect(indice2);
+        rect3 = giveRect(indice3);
+        
+    }
+    else if (rect.w == 64) {
+        indice0 = getCaseIndex64(P0);
+        indice1 = getCaseIndex64(P1);
+        indice2 = getCaseIndex64(P2);
+        indice3 = getCaseIndex64(P3);
+        rect0 = giveRect64(indice0);
+        rect1 = giveRect64(indice1);
+        rect2 = giveRect64(indice2);
+        rect3 = giveRect64(indice3);
+    }
     SDL_SetRenderDrawColor(renderer, 200, 0, 0, 255);
     SDL_RenderDrawRect(renderer, &rect0);
     SDL_RenderDrawRect(renderer, &rect1);
@@ -140,8 +156,6 @@ void Player::setAnimation(const std::string& name) {
     frameTime = 0;
 }
 
-// Direction getDirection();
-// Direction setDirection(Direction newDirection);
 
 Direction Player::getDirection() {
     return currentDirection;
