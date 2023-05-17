@@ -41,7 +41,7 @@ protected:
 
 public:
 
-    Player(int x = 0, int y = 0, int ENTITY_SIZE = 32, float moove_speed = 100, int hp = 100, int exp = 0, int level = 1, int attack_strength = 10, int speed = 1);
+    Player(int x = 0, int y = 0, int ENTITY_SIZE = 32, float moove_speed = 500, int hp = 100, int exp = 0, int level = 1, int attack_strength = 10, int speed = 1);
     void gainExp(int exp_points);
     void levelUp();
     void takeDamage(int damage); 

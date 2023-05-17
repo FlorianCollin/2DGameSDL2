@@ -197,10 +197,6 @@ int main() {
                     cursorInWindow = false;
                 }
             }
-            else {
-                lastDirection == currentDirection;
-
-            }
 
             
         }

@@ -98,7 +98,7 @@ void Player::updateAnimation(float deltaTime) {
 
 void Player::drawAnimation(SDL_Renderer* renderer) {
     SDL_Rect srcRect = {(currentAnimation->startFrame + currentFrame) * frameWidth, (currentAnimation->lineFrame) * frameWidth, frameWidth, frameHeight};
-    if (currentDirection == LEFT) {
+    if (currentDirection == LEFT || (lastDirection == LEFT && currentDirection == NOT_MOOVING)) {
         SDL_RenderCopyEx(renderer, texture, &srcRect, &rect, 0, NULL, SDL_FLIP_HORIZONTAL);
     }
     else {
