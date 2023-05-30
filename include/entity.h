@@ -24,6 +24,7 @@ protected:
     float moove_speed;
     static int nb_entity;
 
+
 public:
     Entity(int x = 0, int y = 0, int ENTITY_SIZE = 32, float moove_speed_ = 200);
     ~Entity(); 

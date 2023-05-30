@@ -133,3 +133,7 @@ void Plateau::affiche(int k){
 int Plateau::get(int k) {
 	return tab[k];
 }
+
+int* Plateau::getTab() {
+	return tab;
+}

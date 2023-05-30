@@ -14,6 +14,21 @@
 #include "config.h"
 
 
+
+/*
+TODO : 
+
+    - Changer la manière dont les caractéristiques du jeu sont fournies
+     --> utiliser une structure config plutot qu'une classe la mettre en variable dans chaque instance d'une classe
+
+    - Revoir la manière dont sont gérer les classes, mieux subdiviser les classes
+     --> une classe item 
+        --> une classe entity 
+            --> etc
+
+
+*/
+
 int main() {
 
     Config config;
@@ -81,7 +96,7 @@ int main() {
     selectRect.w = config.getBLOCK_SIZE();
     selectRect.h = config.getBLOCK_SIZE();
 
-    showMenu(renderer);
+    showMenu(renderer, config);
 
 
     bool cursorInWindow = true;
@@ -112,40 +127,34 @@ int main() {
                 noKeyPress = false;
                 switch (event.key.keysym.sym) {
                     case SDLK_d:
-                        lastDirection = currentDirection;
-                        currentDirection = RIGHT;
-                        player.moove(currentDirection, plateau0, config);
+                        player.setDirection(RIGHT);
                         break;
                     case SDLK_q:
-                        lastDirection = currentDirection;
-                        currentDirection = LEFT;
-                        player.moove(currentDirection, plateau0, config);                        
+                        player.setDirection(LEFT);
                         break;
                     case SDLK_s:
-                        lastDirection = currentDirection;
-                        currentDirection = DOWN;
-                        player.moove(currentDirection, plateau0, config);                        
+                        player.setDirection(DOWN);
                         break;
                     case SDLK_z:
-                        lastDirection = currentDirection;
-                        currentDirection = UP;
-                        player.moove(currentDirection, plateau0, config);                        
+                      player.setDirection(UP);
                         break;
-
                     case SDLK_i:
                         showStats = true;
                         break;
-
                     case SDLK_m:
                         edit1 = true;
                         break;
-
                     case SDLK_n:
                         edit0 = true;
                         break;
-
                     case SDLK_l:
                         plateau0.save();
+                        break;
+                    case SDLK_SPACE:
+                        if (player.getIsJumping() == 0) {
+                            player.resetSpeedY();
+                            player.setIsJumping();
+                        }
                         break;
 
                 }
@@ -154,9 +163,7 @@ int main() {
             else if (event.type == SDL_KEYUP) {
                 noKeyPress = true;
                 if (switch_animation == false) switch_animation = true;
-                lastDirection = currentDirection;
-                currentDirection = NOT_MOOVING;
-
+                player.setDirection(NOT_MOOVING);
                 switch (event.key.keysym.sym) {
                     case SDLK_i:
                         showStats = false;
@@ -169,6 +176,7 @@ int main() {
                 selectRect.x = (mouseX / config.getBLOCK_SIZE()) * config.getBLOCK_SIZE();
                 selectRect.y = (mouseY / config.getBLOCK_SIZE()) * config.getBLOCK_SIZE();
             }
+
             else if (event.type == SDL_WINDOWEVENT) {
                 if (event.window.event == SDL_WINDOWEVENT_ENTER) {
                     cursorInWindow = true;
@@ -179,7 +187,8 @@ int main() {
             }
 
             
-        }
+        } // fin de la boucle Pollevent
+
         if (edit1) {
             std::cout << selectRect.x/config.getBLOCK_SIZE() << " " << selectRect.y/config.getBLOCK_SIZE() << std::endl;
             plateau0.edit(selectRect.x/config.getBLOCK_SIZE(), selectRect.y/config.getBLOCK_SIZE(), 1);
@@ -191,14 +200,16 @@ int main() {
             edit0 = false;
         }
 
+        player.update(plateau0, config);
+
         SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
         SDL_RenderClear(renderer);
         texturePaste(renderer, texture, back_texture);
         plateau0.draw(renderer, texture, mur);
 
 
-        if (currentDirection != NOT_MOOVING) {
-            if (lastDirection == NOT_MOOVING) player.setAnimation("moove");
+        if (player.getDirection() != NOT_MOOVING) {
+            if (player.getLastDirection() == NOT_MOOVING) player.setAnimation("moove");
             player.setDirection(currentDirection);
             player.updateAnimation((float)(1000.0/30.0));
             player.drawAnimation(renderer);
@@ -223,6 +234,9 @@ int main() {
         SDL_RenderPresent(renderer);
 
     }
+
+    // Free section !
+
     destroyAll(window, renderer, texture, back_texture);
     TTF_CloseFont(font);
     TTF_Quit();
@@ -230,3 +244,4 @@ int main() {
 
     return 0;
 }
+

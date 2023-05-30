@@ -8,12 +8,16 @@
 #include <fstream>
 #include <map>
 
+
 struct Animation {
     int startFrame;
     int numFrames; // Nombre de frame dans l'animation 
     int lineFrame; // Numéro de la ligne ou ce trouve les sprites de l'animation
     float frameDuration; // Duréé qui sépare chaque changement d'image
 };
+
+int check(SDL_Rect rect_tmp, Plateau &plat);
+
 
 class Player : public Entity {
 protected:
@@ -25,6 +29,12 @@ protected:
     Direction currentDirection;
     Direction lastDirection;
 
+    // gestion de la gravité
+
+    bool isJumping;
+    int speedY;
+    int gravity;
+    
     // pour les animations du player // attention chaque sprite doit STRICTEMENT faire 32 par 32 pixels
 
     int frameWidth; // Largeur d'une seule image dans la feuille d'animation
@@ -64,8 +74,20 @@ public:
     // Direction
 
     Direction getDirection();
+    Direction getLastDirection();
     Direction setDirection(Direction newDirection); // cette fonctin set une nouvvelle direction et retourne l'ancienne
 
+    // Saut
+
+    bool getJumpingState();
+    bool setJumpingState(bool state);
+
+    // Deplacement avec gravité
+
+    int update(Plateau &plat, Config &config); //limitation 30 fps
+    void setIsJumping();
+    bool getIsJumping();
+    void resetSpeedY();
 };
 
 #endif

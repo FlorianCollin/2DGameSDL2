@@ -34,7 +34,9 @@ public :
 	void affiche(int i, int j);
 	void affiche(int k);
 	int get(int k);
-
+	int* getTab();
+	
+	friend class Player;
 	friend class Entity;
 };
 

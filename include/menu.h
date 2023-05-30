@@ -9,8 +9,10 @@
 #include <string>
 #include <SDL2/SDL.h>
 
+#include "config.h"
 
-void showMenu(SDL_Renderer* renderer);
+
+void showMenu(SDL_Renderer* renderer, Config &config);
 bool isInside(SDL_Rect rect, int x, int y);
 
 #endif

@@ -5,9 +5,9 @@ bool isInside(SDL_Rect rect, int x, int y) {
     return (x >= rect.x && x <= rect.x + rect.w) && (y >= rect.y && y <= rect.y + rect.h);
 }
 
-void showMenu(SDL_Renderer* renderer) {
-    int SCREEN_WIDTH = 640;
-    int SCREEN_HEIGHT = 480;
+void showMenu(SDL_Renderer* renderer, Config &config) {
+    int SCREEN_WIDTH = config.getSCREEN_WIDTH();
+    int SCREEN_HEIGHT = config.getSCREEN_HEIGHT();
     SDL_Texture* play_button_texture = loadImage("./asset/image/play_button.bmp", renderer);
     if (play_button_texture == nullptr) {
         printf("Failed to load play_button.bmp\n");

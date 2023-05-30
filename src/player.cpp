@@ -17,6 +17,8 @@ Player::Player(int x, int y, int ENTITY_SIZE, float moove_speed, int hp, int exp
     currentAnimation = &animations["basic"];
     currentFrame = 0;
     frameTime = 0;
+    speedY = -1000;
+    gravity = 200;
 }
 
 void Player::gainExp(int exp_points) {
@@ -107,6 +109,7 @@ void Player::drawAnimation(SDL_Renderer* renderer) {
     }
     
     #ifdef HIT_BOX
+    // On desine tout les carrés ou il y à un des coins de l'entity joueur 
     SDL_Point P0, P1, P2, P3;
     P0.x = rect.x;          
     P0.y = rect.y;
@@ -161,8 +164,160 @@ Direction Player::getDirection() {
     return currentDirection;
 }
 
+Direction Player::getLastDirection() {
+    return lastDirection;
+}
+
 Direction Player::setDirection(Direction newDirection) {
     lastDirection = currentDirection;
     currentDirection = newDirection;
     return lastDirection;
+}
+
+
+bool Player::getJumpingState() {
+    return isJumping;
+}
+
+bool Player::setJumpingState(bool state) {
+    bool lastJumpingState = isJumping;
+    isJumping = state;
+    return lastJumpingState;
+}
+
+// la fonction update géneralise les fonctions de deplacement et ajoute le jump 
+
+int Player::update(Plateau &plat, Config &config) {
+
+    float deltaTime = 1.0/30.0; // Ici on considère que l‡e jeu tourne à 30 fps fixe   // NOTE : cette pratique est dangeureuse !!
+    int SCREEN_WIDTH = config.getSCREEN_WIDTH();
+    int SCREEN_HEIGHT = config.getSCREEN_HEIGHT();
+    int BLOCK_SIZE = rect.w;
+
+    if (isJumping) { 
+        rect.y += speedY * deltaTime;
+    }
+
+    SDL_Rect mur_rect;
+    mur_rect.w = BLOCK_SIZE;
+    mur_rect.h = BLOCK_SIZE;
+
+    int nb_lignes = SCREEN_HEIGHT/BLOCK_SIZE;
+    int nb_colonnes = SCREEN_WIDTH/BLOCK_SIZE;
+
+    bool intersection = 0; // si intersection = 1 alors il y à intersectoin !
+
+    SDL_Rect rect_tmp = rect;
+
+    if (isJumping) { 
+        rect_tmp.y += speedY * deltaTime;
+    }
+
+    // on moove un player virtuelle
+    switch (currentDirection)
+    {
+    case RIGHT:
+        rect_tmp.x += moove_speed*deltaTime;
+        break;
+    case LEFT:
+        rect_tmp.x -= moove_speed*deltaTime;
+        break;
+    case  UP:
+        rect_tmp.y -=  moove_speed*deltaTime; 
+        break;
+    case DOWN:
+        rect_tmp.y += moove_speed*deltaTime; 
+    default:
+        break;
+    }
+
+    intersection = check(rect_tmp, plat);
+
+
+    if (intersection == 0){
+        afficheRect(rect_tmp);
+        speedY += gravity * deltaTime;
+        rect = rect_tmp;
+    }
+    else {
+        if (isJumping == 1) {
+            speedY = 0;
+            isJumping = false;
+        }
+    }
+
+    // La suite permet de refermet le bord gauche sur droit et le bord haut sur le bas
+
+    if (rect.x < 0) {
+        rect.x = SCREEN_WIDTH - BLOCK_SIZE;
+    } else if (rect.x > SCREEN_WIDTH - BLOCK_SIZE) {
+        rect.x = 0;
+    }
+    
+    if (rect.y < 0) {
+        rect.y = SCREEN_HEIGHT - BLOCK_SIZE;
+    } else if (rect.y > SCREEN_HEIGHT - BLOCK_SIZE) {
+        rect.y = 0;
+    }
+
+
+    return 1;
+}
+
+int check(SDL_Rect rect_tmp, Plateau &plat) {
+    int intersection = 0;
+    
+    int w = rect_tmp.w; int h = rect_tmp.h;
+
+    // Test de collision
+
+    SDL_Point P0, P1, P2, P3;
+    int indice0, indice1, indice2, indice3;
+    P0.x = rect_tmp.x;          
+    P0.y = rect_tmp.y;
+    P1.x = rect_tmp.x + w;          
+    P1.y = rect_tmp.y;
+    P2.x = rect_tmp.x + w;          
+    P2.y = rect_tmp.y + h;
+    P3.x = rect_tmp.x;          
+    P3.y = rect_tmp.y + h;
+
+    if (rect_tmp.w == 32) {
+        indice0 = getCaseIndex(P0);
+        indice1 = getCaseIndex(P1);
+        indice2 = getCaseIndex(P2);
+        indice3 = getCaseIndex(P3);
+    }
+    else if (rect_tmp.w == 64) {
+        indice0 = getCaseIndex64(P0);
+        indice1 = getCaseIndex64(P1);
+        indice2 = getCaseIndex64(P2);
+        indice3 = getCaseIndex64(P3);
+    }
+    else printf("error size during the update\n");
+    
+
+    if (plat.get(indice0) == 1) {
+        intersection = 1;
+    } else if (plat.get(indice1) == 1) {
+        intersection = 1;
+    } else if (plat.get(indice2) == 1) {
+        intersection = 1;
+    } else if (plat.get(indice3) == 1) {
+        intersection = 1;
+    }
+
+    return intersection;
+}
+
+void Player::setIsJumping() {
+    isJumping = 1;
+}
+
+bool Player::getIsJumping() {
+    return isJumping;
+}
+
+void Player::resetSpeedY() {
+    speedY = -100;
 }
